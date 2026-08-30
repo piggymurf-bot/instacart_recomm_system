@@ -1,0 +1,18 @@
+# Ignore sensitive API keys
+.kaggle/access_token
+.venv/
+
+#OS/IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Ignore data files and large models
+/data/
+/models/
+
+# Python 
+.ipynb_checkpoints/
+.pytest_cache/
+__pycache__/
+empty_python.py
