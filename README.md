@@ -7,8 +7,8 @@ This project uses the Instacart dataset from Kaggle to train and set up the prod
 ## 1. Summary & Performance
 
 The performance of the first stage is decided by @Recall50 against all items in the basket. 
+  * Evaluating candidate pool across 131,209 validation users (K=50)
 
-📊 Evaluating candidate pool across 131,209 validation users (K=50)
 |-------------------------------------------------------|
 |🎯 STAGE 1 RETRIEVAL EVALUATION (K = 50)               |
 |📌 Mean Recall@50:   50.45%                            |
