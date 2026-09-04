@@ -146,7 +146,76 @@ instacart_recomm_system/
 ```
 
 ---
+## 3. Machine Learning Pipeline
 
+---
+## 4. Setup & Installation
+
+### Prerequisites
+
+* Python 3.10+
+* Virtual environment tool (`venv` or `conda`)
+
+```bash
+# Clone repository
+git clone [https://github.com/your-username/btc_stacking_system.git](https://github.com/your-username/btc_stacking_system.git)
+cd btc_stacking_system
+
+# Create and activate environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Upgrade pip and install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+```
+
+---
+
+## 5. Usage & Pipeline Execution
+
+The pipeline is managed via `main.py` CLI interface:
+
+Run Complete End-to-End Pipeline
+
+```bash
+python main.py --all
+```
+
+Modular Pipeline Commands
+
+```bash
+# 1. Fetch raw Instacart dataset from KAGGLE APIs
+python main.py --download-data
+
+# 2. Set two-tower model and generate candidate Data (train and test)
+python main.py --stage-one
+
+# 3. Create features from the candidate Data (train and test) for feeding into the LightGBM model
+python main.py --features-building
+
+# 4. Train LightGBM model and evaluate F1 score
+python main.py --stage-two
+
+# 5. Make predictions on the test set and generate submission
+python main.py --test
+
+# 6. Evaluate @Recall50 on the candidate Data
+python main.py --recall50
+
+```
+
+---
+
+## 6. Output Artifacts
+
+The pipeline execution gives out the following output artifacts:
+
+* Stage one candidate data: `data/stage1_candidates_top50.parquet` and  `data/stage1_test_candidates_top50.parquet`
+* Stage two featured data: `data/stage2_dataset.parquet` and  `data/stage2_test_dataset.parquet`.
+* Trained Model Binary: `models/two_tower_model.pt` and `models/stage2_lightgbm.model`
+* Prediction on test dataset: `data/submission.csv` 
    
 
 
