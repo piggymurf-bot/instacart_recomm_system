@@ -82,7 +82,7 @@ Validation Users: 41,241 | Total Target Items Across Val Users: 276,978
 📈 Net Absolute Boost from Faron:          +0.02%
 ============================================================
 
-Lastly, the trained model (both stage one and two) is used on the testing set, and the results are as follows:
+Lastly, the trained model (both stage one and two) is used on the testing set. The product recommendations for each customer (user ID) are generated and exported to `submission.csv`. 
 
 Max Probability:    1.0000
 Mean Probability:   0.0477
@@ -111,6 +111,41 @@ Sample Submission Rows:
   1980631              13575 9387 6184 22362 46061 13914 41400
    139655      27845 22935 17794 13176 32655 24964 22963 21903
 
+---
+
+## 2. Repository Architecture
+
+```text
+instacart_recomm_system/
+├── data/                               # Store all data files (raw data, stage 1 candidate, stage 2 featured data, and submission file 
+├── models/
+│   ├── two_tower_model.pt              # Stage one saved two-tower model 
+│   └── stage2_lightgbm.model           # Stage two saved GBDT model (LightGBM here)
+├── src/
+│   ├── __init__.py
+│   ├── dtypes_list.py                  # Customized data types for each feature
+│   ├── data/
+│   │   ├── __init__.py
+│   │   └── download_data.py            # Fetching Instacart dataset from Kaggle
+│   ├── features/
+│   │   ├── __init__.py
+│   │   └── build_stage2_features.py    # Featuring the dataset according to the stage one candidate before feeding into stage two 
+│   └── models/
+│       ├── __init__.py
+│       ├── train_two_tower.py           # Setting and training two-tower model and generating stage one candidate 
+│       ├── stage1_recall.py             # Evaluating Recall@50 on the stage one candidate
+│       ├── train_lightGBM.py            # Training LightGBM model from featured dataset
+│       ├── dynamics_f1.py               # Evaluating the dynamic F1 score
+│       ├── faron_optimizer.py           # Class object used to perform Faron's optimization
+│       └── ttest_and_gensubmission.py   # Employing trained model on the test dataset and generating product recommendation 
+├── .Kaggel/access_token/
+│   └── TOKEN_FILE                       # Token for Kaggle environment
+├── main.py                              # Unified CLI pipeline orchestrator
+├── requirements.txt                     # Project dependencies
+└── README.md                            # System documentation
+```
+
+---
 
    
 
