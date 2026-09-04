@@ -13,9 +13,9 @@ The Instacart dataset consists of about 200,000 customers and 50,000 products, w
 
 In stage one, Recall@50 against all items in the basket is used to evaluate its performance (over 131,209 customers):
 
-|Metric          | Score|
-|Mean Recall@50  |50.45%|
-|Median Recall@50|50.00%|
+Metric	Score
+Mean Recall@50	50.45%
+Median Recall@50	50.00%
 
   - Small Baskets (1–5 items): 59.47% Recall
   - Medium Baskets (6–15 items): 48.36% Recall
