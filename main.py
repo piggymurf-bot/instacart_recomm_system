@@ -32,6 +32,11 @@ def main():
       help='Set two-tower model and generate candidate Data (train and test)',
   )
   parser.add_argument(
+      '--recall50', 
+      action='store_true', 
+      help='Evaluate @Recall50 on the candidate Data'
+  )
+  parser.add_argument(
       '--features-building', 
       action='store_true', 
       help='Create features from the candidate Data (train and test)'
@@ -44,7 +49,7 @@ def main():
   parser.add_argument(
       '--test',
       action='store_true',
-      help='Make prediction from the test set and generate submission',
+      help='Make predictions on the test set and generate submission',
   )
   parser.add_argument(
       "--all",
@@ -68,7 +73,7 @@ def main():
     args.stage_two = True
     args.test = True
 
-  if not any([args.download_data, args.stage_one, args.features_building, args.stage_two, args.test]):
+  if not any([args.download_data, args.stage_one, args.recall50, args.features_building, args.stage_two, args.test]):
     parser.print_help()
     sys.exit(1)
 
@@ -82,7 +87,9 @@ def main():
   if args.stage_one:
     print('--> Setup Two-Tower model...')
     two_tower_main()
-    #compute_stage1_recall()
+  if args.recall50:
+    print('--> Evaluate @Recall50...')
+    compute_stage1_recall()
 
   if args.features_building:
     print('--> Build Features...')
