@@ -115,8 +115,8 @@ Ranking & Threshold Decisioning (GBDT-LightGBM):
 
 ```bash
 # Clone repository
-git clone [https://github.com/your-username/btc_stacking_system.git](https://github.com/your-username/btc_stacking_system.git)
-cd btc_stacking_system
+git clone [https://github.com/piggymurf-bot/instacart_recomm_system.git](https://github.com/piggymurf-bot/instacart_recomm_system.git)
+cd instacart_recomm_system
 
 # Create and activate environment
 python -m venv venv
@@ -127,7 +127,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 ```
-
+> **Note:** Place your kaggle.json API key under ~/.kaggle/ or configure .Kaggle/access_token/ to enable automatic dataset downloading.
 ---
 
 ## 5. Usage & Pipeline Execution
