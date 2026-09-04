@@ -22,98 +22,23 @@ In stage one, Recall@50 against all items in the basket is used to evaluate its 
   * Medium Baskets (6–15 items): 48.36% Recall
   * Large Baskets (16+ items): 42.64% Recall
 
+As for stage two, the F1-Score (full basket) using Faron's optimization is used to evaluate the performance of the GBDT model in prediction/recommendation (41,241 customers and 276,978 actual reordered products):
 
-As for the second stage, the candidate items from the first stage will be used to train a Gradient Boost Decision Tree model to actually give a precise product recommendation. Its performance is evaluated via the dynamic F1 score using Faron's algorithm:
+|      Stage 2 Decision Strategy                 |     Mean Validation F1-Score       |
+|------------------------------------------------|------------------------------------|
+| Static Probability Threshold ($p \ge 0.14$)	   |                        55.71%      |
+| Dynamic Threshold (Faron's Optimizer)	         |                        55.74%      |
 
-🔍 Optimizing Decision Threshold for Max F1-Score...
-Threshold    | Mean Validation F1-Score
-------------------------------------------
-0.10         | 55.24                    %
-0.11         | 55.41                    %
-0.12         | 55.55                    %
-0.13         | 55.64                    %
-0.14         | 55.71                    %
-0.15         | 55.70                    %
-0.16         | 55.68                    %
-0.17         | 55.61                    %
-0.18         | 55.52                    %
-0.19         | 55.42                    %
-0.20         | 55.29                    %
-0.21         | 55.15                    %
-0.22         | 55.00                    %
-0.23         | 54.79                    %
-0.24         | 54.55                    %
-0.25         | 54.34                    %
-0.26         | 54.08                    %
-0.27         | 53.84                    %
-0.28         | 53.58                    %
-0.29         | 53.30                    %
-0.30         | 53.01                    %
-0.31         | 52.71                    %
-0.32         | 52.40                    %
-0.33         | 52.12                    %
-0.34         | 51.80                    %
-==========================================
-🎯 OPTIMAL THRESHOLD: 0.14
-🏆 BEST VALIDATION F1-SCORE: 55.71%
-⏱️ Optimization completed in 186.11 seconds.
+Top 5 features for making predictions 
+  1. The recency of the purchase
+  2. The repurchase cycle
+  3. The day-of-week purchasing pattern
+  4. The consistency of repurchasing
+  5. The total historical frequency of purchasing
 
-🔝 Top 10 Most Important Features:
-                      feature   importance
-     ui_orders_since_last_buy 4.888528e+06
-target_days_since_prior_order 2.425954e+06
-                    order_dow 1.733305e+06
-        ui_order_streak_ratio 1.562200e+06
-              ui_times_bought 1.256616e+06
-            order_hour_of_day 4.747572e+05
-            item_reorder_rate 2.414873e+05
-           ui_first_order_num 1.298308e+05
-         ui_avg_cart_position 1.242642e+05
-    user_overall_reorder_rate 1.209812e+05
-💾 Trained LightGBM Model Saved to: models/stage2_lightgbm.model
-📥 Loading Stage 2 Feature Matrix & Raw Target Data...
-Validation Users: 41,241 | Total Target Items Across Val Users: 276,978
-🔮 Scoring Candidates...
+The test predictions on 75,000 customers are given in `submission.csv`
+> **Note on Submission Structure:** Each test customer in the Instacart dataset is assigned a single test order_id. Therefore, recommending a basket for an order_id is directly equivalent to generating a product recommendation for that specific customer.
 
-📊 Evaluating Static Threshold against FULL Target Carts...
-⚡ Running Faron's Expected F1 Optimizer against FULL Target Carts...
-
-============================================================
-🏆 FULL BASKET KAGGLE-EQUIVALENT EVALUATION RESULTS
-============================================================
-📌 Static Threshold (0.14) Full Cart F1:   55.71%
-🚀 Faron's Expected F1 Full Cart F1:       55.74%
-📈 Net Absolute Boost from Faron:          +0.02%
-============================================================
-
-Lastly, the trained model (both stage one and two) is used on the testing set. The product recommendations for each customer (user ID) are generated and exported to `submission.csv`. 
-
-Max Probability:    1.0000
-Mean Probability:   0.0477
-Median Probability: 0.0000
-% Pairs p >= 0.10:  14.66%
-
-=======================================================
-✅ SUBMISSION FILE GENERATED SUCCESSFULLY
-=======================================================
-📁 File Saved To:          data/submission.csv
-📊 Total Rows:             75,000
-🛒 Average Predicted Cart: 8.28 items
-🚫 Carts Marked 'None':    3,739 (4.99%)
-=======================================================
-
-Sample Submission Rows:
- order_id                                             products
-  2774568                  39190 47766 21903 18599 43961 17668
-   329954                                                 None
-  1528013                               21903 38293 8424 27521
-  1376945 8309 27959 14947 13176 33572 44632 34658 28465 35948
-  1356845             13176 7076 10863 14992 11520 28134 21616
-  2161313              196 10441 12427 14715 27839 37710 11266
-  1416320       21903 21137 24852 17948 5134 41950 24561 21616
-  1735923         17008 31487 35123 15131 34690 12108 2192 196
-  1980631              13575 9387 6184 22362 46061 13914 41400
-   139655      27845 22935 17794 13176 32655 24964 22963 21903
 
 ---
 
