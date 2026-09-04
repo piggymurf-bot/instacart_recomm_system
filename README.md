@@ -77,28 +77,30 @@ instacart_recomm_system/
 ---
 ## 3. Machine Learning Pipeline Architecture
 
-                                  [ STAGE 1: RETRIEVAL ]
-  User Features ───> User Tower  ──┐
-                                   ├──> Inner Product ──> Top-50 Candidates per User
- Product Features ──> Product Tower ┘     (Recall@50)
+                                    [ STAGE 1: RETRIEVAL ]
+      User Features ───> User Tower  ──┐
+                                       ├──> Inner Product ──> Top-50 Candidates per User
+    Product Features ──> Product Tower ┘     (Recall@50)
 
                                              │
                                              ▼
                                     [ STAGE 2: RANKING ]
-  Top-50 Candidates ───> Feature Engineering ───> LightGBM Ranker ───> Predicted Probability P(reorder)
+    Top-50 Candidates ───> Feature Engineering ───> LightGBM Ranker ───> Predicted Probability P(reorder)
                          (24 UI & Order Features)
 
                                              │
                                              ▼
-                                 [ DECISION & OPTIMIZATION ]
-  Predicted Probabilities ───> Faron's F1 Optimizer ───> Dynamic Basket Cut ───> final submission.csv
+                                  [ DECISION & OPTIMIZATION ]
+    Predicted Probabilities ───> Faron's F1 Optimizer ───> Dynamic Basket Cut ───> final submission.csv
 
 
 Candidate Retrieval (Two-Tower Model-PyTorch):
 * From the purchase history, it constructs $d$-dimensional vector space shared between customers and products. The more a product is likely to be purchased by a certain customer, the more aligned their vector representations in the shared space. 
 * The top 50 product candidates for each user are retrieved once the shared vector space is completely set. 
+
 Feature Engineering Pipeline:
 * The raw data is engineered into 24 features, divided into three categories: User Demographics/Behavior, Product Reorder Metrics, and User-Item Interaction Streaks (ui_orders_since_last_buy, ui_order_streak_ratio, ui_avg_cart_position).
+
 Ranking & Threshold Decisioning (GBDT-LightGBM):
 * The classifier scores candidate pairs and assigns a calibrated probability threshold $P(\text{reorder})$, then converts probabilities into expected F1 curves per user, dynamically picking the optimal cutoff $k$ items (or predicting None if no candidates cross expected utility thresholds).
 
