@@ -115,7 +115,7 @@ Ranking & Threshold Decisioning (GBDT-LightGBM):
 
 ```bash
 # Clone repository
-git clone [https://github.com/piggymurf-bot/instacart_recomm_system.git](https://github.com/piggymurf-bot/instacart_recomm_system.git)
+git clone https://github.com/piggymurf-bot/instacart_recomm_system.git
 cd instacart_recomm_system
 
 # Create and activate environment
