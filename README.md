@@ -11,25 +11,16 @@ The Instacart dataset consists of about 200,000 customers and 50,000 products, w
 * Stage 1 Candidate Generation (Two-Tower Model): This stage narrows the entire set of products down to 50 candidates per customer based on purchase history. 
 * Stage 2 Ranking & Prediction (LightGBM + Faron's Optimizer): This stage ranks the narrowed candidates from the featured buying history and determines the basket size for each customer to maximize an expected F1-score. 
 
-In stage one, Recall@50 is used to evaluate its performance (over 131,209 customers):
+In stage one, Recall@50 against all items in the basket is used to evaluate its performance (over 131,209 customers):
 
-Metric,Score
-Mean Recall@50,50.45%
-Median Recall@50,50.00%
+|Metric | Score|
+|Mean Recall@50|50.45%|
+|Median Recall@50|50.00%|
 
+-Small Baskets (1–5 items): 59.47% Recall
+-Medium Baskets (6–15 items): 48.36% Recall
+-Large Baskets (16+ items): 42.64% Recall
 
-In the first stage, the two-tower model reduced the number of possible products to only 50 items. The performance in this stage is evaluated by Recall@50 against all items in the basket. The result for the training set (131,209 customers) is as follows:
-
-  |-------------------------------------------------------|
-  |🎯 STAGE 1 RETRIEVAL EVALUATION (K = 50)               |
-  |📌 Mean Recall@50:   50.45%                            |
-  |📌 Median Recall@50: 50.00%                            |
-  |-------------------------------------------------------|
-  |📊 Recall Breakdown by True Reorder Basket Size:       |
-  |   • Small Baskets (1-5 items):   59.47%               |
-  |   • Medium Baskets (6-15 items): 48.36%               |
-  |   • Large Baskets (16+ items):   42.64%               |
-  |=======================================================|
 
 As for the second stage, the candidate items from the first stage will be used to train a Gradient Boost Decision Tree model to actually give a precise product recommendation. Its performance is evaluated via the dynamic F1 score using Faron's algorithm:
 
