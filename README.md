@@ -46,19 +46,19 @@ The test predictions on 75,000 customers are given in `submission.csv`
 
 ```text
 instacart_recomm_system/
-├── data/                               # Store all data files (raw data, stage 1 candidate, stage 2 featured data, and submission file 
+├── data/                               # Raw datasets, stage candidates, featured dataset, and submission outputs 
 ├── models/
-│   ├── two_tower_model.pt              # Stage one saved two-tower model 
-│   └── stage2_lightgbm.model           # Stage two saved GBDT model (LightGBM here)
+│   ├── two_tower_model.pt              # Saved stage one two-tower model (PyTorch) 
+│   └── stage2_lightgbm.model           # Saved stage two GBDT model (LightGBM)
 ├── src/
 │   ├── __init__.py
-│   ├── dtypes_list.py                  # Customized data types for each feature
+│   ├── dtypes_list.py                  # Customized pandas dtypes for each feature
 │   ├── data/
 │   │   ├── __init__.py
-│   │   └── download_data.py            # Fetching Instacart dataset from Kaggle
+│   │   └── download_data.py            # Downloading Instacart dataset from Kaggle API 
 │   ├── features/
 │   │   ├── __init__.py
-│   │   └── build_stage2_features.py    # Featuring the dataset according to the stage one candidate before feeding into stage two 
+│   │   └── build_stage2_features.py    # Feature engineering according to the stage one candidate  
 │   └── models/
 │       ├── __init__.py
 │       ├── train_two_tower.py           # Setting and training two-tower model and generating stage one candidate 
@@ -75,7 +75,32 @@ instacart_recomm_system/
 ```
 
 ---
-## 3. Machine Learning Pipeline
+## 3. Machine Learning Pipeline Architecture
+
+                                  [ STAGE 1: RETRIEVAL ]
+  User Features ───> User Tower  ──┐
+                                   ├──> Inner Product ──> Top-50 Candidates per User
+ Product Features ──> Product Tower ┘     (Recall@50)
+
+                                             │
+                                             ▼
+                                    [ STAGE 2: RANKING ]
+  Top-50 Candidates ───> Feature Engineering ───> LightGBM Ranker ───> Predicted Probability P(reorder)
+                         (24 UI & Order Features)
+
+                                             │
+                                             ▼
+                                 [ DECISION & OPTIMIZATION ]
+  Predicted Probabilities ───> Faron's F1 Optimizer ───> Dynamic Basket Cut ───> final submission.csv
+
+
+Candidate Retrieval (Two-Tower Model-PyTorch):
+* From the purchase history, it constructs $d$-dimensional vector space shared between customers and products. The more a product is likely to be purchased by a certain customer, the more aligned their vector representations in the shared space. 
+* The top 50 product candidates for each user are retrieved once the shared vector space is completely set. 
+Feature Engineering Pipeline:
+* The raw data is engineered into 24 features, divided into three categories: User Demographics/Behavior, Product Reorder Metrics, and User-Item Interaction Streaks (ui_orders_since_last_buy, ui_order_streak_ratio, ui_avg_cart_position).
+Ranking & Threshold Decisioning (GBDT-LightGBM):
+* The classifier scores candidate pairs and assigns a calibrated probability threshold $P(\text{reorder})$, then converts probabilities into expected F1 curves per user, dynamically picking the optimal cutoff $k$ items (or predicting None if no candidates cross expected utility thresholds).
 
 ---
 ## 4. Setup & Installation
