@@ -13,13 +13,13 @@ The Instacart dataset consists of about 200,000 customers and 50,000 products, w
 
 In stage one, Recall@50 against all items in the basket is used to evaluate its performance (over 131,209 customers):
 
-      Metric	          Score
-      Mean Recall@50	  50.45%
-      Median Recall@50	50.00%
+|      Metric            |	        Score        |
+|      Mean Recall@50	 |             50.45%      |
+|      Median Recall@50	 |             50.00%      |
 
-  - Small Baskets (1–5 items): 59.47% Recall
-  - Medium Baskets (6–15 items): 48.36% Recall
-  - Large Baskets (16+ items): 42.64% Recall
+  * Small Baskets (1–5 items): 59.47% Recall
+  * Medium Baskets (6–15 items): 48.36% Recall
+  * Large Baskets (16+ items): 42.64% Recall
 
 
 As for the second stage, the candidate items from the first stage will be used to train a Gradient Boost Decision Tree model to actually give a precise product recommendation. Its performance is evaluated via the dynamic F1 score using Faron's algorithm:
