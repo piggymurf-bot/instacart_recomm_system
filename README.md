@@ -143,23 +143,23 @@ python main.py --all
 Modular Pipeline Commands
 
 ```bash
-# 1. Fetch raw Instacart dataset from KAGGLE APIs
+# 1. Download Instacart dataset from Kaggle APIs
 python main.py --download-data
 
 # 2. Set two-tower model and generate candidate Data (train and test)
 python main.py --stage-one
 
-# 3. Create features from the candidate Data (train and test) for feeding into the LightGBM model
+# 3. Evaluate Recall@50 on the candidate Data
+python main.py --recall50
+
+# 4. Create features from the candidate Data (train and test) for feeding into the LightGBM model
 python main.py --features-building
 
-# 4. Train LightGBM model and evaluate F1 score
+# 5. Train the LightGBM model and run Faron F1 optimization
 python main.py --stage-two
 
-# 5. Make predictions on the test set and generate submission
+# 6. Make predictions on the test set and generate submission file
 python main.py --test
-
-# 6. Evaluate Recall@50 on the candidate Data
-python main.py --recall50
 
 ```
 
@@ -167,12 +167,10 @@ python main.py --recall50
 
 ## 6. Output Artifacts
 
-The pipeline execution gives out the following output artifacts:
+Execution yields the following output artifacts:
 
-* Stage one candidate data: `data/stage1_candidates_top50.parquet` and  `data/stage1_test_candidates_top50.parquet`
-* Stage two featured data: `data/stage2_dataset.parquet` and  `data/stage2_test_dataset.parquet`.
-* Trained Model Binary: `models/two_tower_model.pt` and `models/stage2_lightgbm.model`
-* Prediction on test dataset: `data/submission.csv` 
+* Candidates: `data/stage1_candidates_top50.parquet`, `data/stage1_test_candidates_top50.parquet`
+* Feature Matrices: `data/stage2_dataset.parquet`, `data/stage2_test_dataset.parquet`
+* Trained Weights for Models: `models/two_tower_model.pt`, `models/stage2_lightgbm.model`
+* Final Submission: `data/submission.csv`
    
-
-
