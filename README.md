@@ -110,6 +110,7 @@ Ranking & Threshold Decisioning (GBDT-LightGBM):
 ### Prerequisites
 
 * Python 3.10+
+* CUDA-compatible GPU (recommended for Stage 1 training)
 * Virtual environment tool (`venv` or `conda`)
 
 ```bash
