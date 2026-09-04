@@ -6,8 +6,7 @@ This project uses the Instacart dataset from Kaggle to train and set up the prod
 
 ## 1. Summary & Performance
 
-The performance of the first stage is decided by Recall@50 against all items in the basket. 
-  * Evaluating candidate pool across 131,209 validation users (K=50)
+In the first stage, the two-tower model reduced the number of possible products to only 50 items. The performance in this stage is evaluated by Recall@50 against all items in the basket. The result for the training set (131,209 customers) is as follows:
 
   |-------------------------------------------------------|
   |🎯 STAGE 1 RETRIEVAL EVALUATION (K = 50)               |
@@ -20,17 +19,75 @@ The performance of the first stage is decided by Recall@50 against all items in 
   |   • Large Baskets (16+ items):   42.64%               |
   |=======================================================|
 
-As for the second stage, it is evaluated using a dynamic F1 score. 
+As for the second stage, the candidate items from the first stage will be used to train a Gradient Boost Decision Tree model to actually give a precise product recommendation. Its performance is evaluated via the dynamic F1 score using Faron's algorithm:
 
+🔍 Optimizing Decision Threshold for Max F1-Score...
+Threshold    | Mean Validation F1-Score
+------------------------------------------
+0.10         | 55.24                    %
+0.11         | 55.41                    %
+0.12         | 55.55                    %
+0.13         | 55.64                    %
+0.14         | 55.71                    %
+0.15         | 55.70                    %
+0.16         | 55.68                    %
+0.17         | 55.61                    %
+0.18         | 55.52                    %
+0.19         | 55.42                    %
+0.20         | 55.29                    %
+0.21         | 55.15                    %
+0.22         | 55.00                    %
+0.23         | 54.79                    %
+0.24         | 54.55                    %
+0.25         | 54.34                    %
+0.26         | 54.08                    %
+0.27         | 53.84                    %
+0.28         | 53.58                    %
+0.29         | 53.30                    %
+0.30         | 53.01                    %
+0.31         | 52.71                    %
+0.32         | 52.40                    %
+0.33         | 52.12                    %
+0.34         | 51.80                    %
+==========================================
+🎯 OPTIMAL THRESHOLD: 0.14
+🏆 BEST VALIDATION F1-SCORE: 55.71%
+⏱️ Optimization completed in 186.11 seconds.
 
-🔍 Updated Probability Distribution Check:
+🔝 Top 10 Most Important Features:
+                      feature   importance
+     ui_orders_since_last_buy 4.888528e+06
+target_days_since_prior_order 2.425954e+06
+                    order_dow 1.733305e+06
+        ui_order_streak_ratio 1.562200e+06
+              ui_times_bought 1.256616e+06
+            order_hour_of_day 4.747572e+05
+            item_reorder_rate 2.414873e+05
+           ui_first_order_num 1.298308e+05
+         ui_avg_cart_position 1.242642e+05
+    user_overall_reorder_rate 1.209812e+05
+💾 Trained LightGBM Model Saved to: models/stage2_lightgbm.model
+📥 Loading Stage 2 Feature Matrix & Raw Target Data...
+Validation Users: 41,241 | Total Target Items Across Val Users: 276,978
+🔮 Scoring Candidates...
+
+📊 Evaluating Static Threshold against FULL Target Carts...
+⚡ Running Faron's Expected F1 Optimizer against FULL Target Carts...
+
+============================================================
+🏆 FULL BASKET KAGGLE-EQUIVALENT EVALUATION RESULTS
+============================================================
+📌 Static Threshold (0.14) Full Cart F1:   55.71%
+🚀 Faron's Expected F1 Full Cart F1:       55.74%
+📈 Net Absolute Boost from Faron:          +0.02%
+============================================================
+
+Lastly, the trained model (both stage one and two) is used on the testing set, and the results are as follows:
+
 Max Probability:    1.0000
 Mean Probability:   0.0477
 Median Probability: 0.0000
 % Pairs p >= 0.10:  14.66%
-
-⚡ Optimizing Dynamic Carts via Faron's Algorithm...
-📝 Formatting Submission File...
 
 =======================================================
 ✅ SUBMISSION FILE GENERATED SUCCESSFULLY
@@ -53,5 +110,8 @@ Sample Submission Rows:
   1735923         17008 31487 35123 15131 34690 12108 2192 196
   1980631              13575 9387 6184 22362 46061 13914 41400
    139655      27845 22935 17794 13176 32655 24964 22963 21903
+
+
+   
 
 
