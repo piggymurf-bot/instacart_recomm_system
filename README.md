@@ -1,10 +1,22 @@
-# The Instacart product recommendation system
+# Instacart Two-Stage Product Recommendation System
 
-This project uses the Instacart dataset from Kaggle to train and set up the product recommendation system. The system is divided into two stages: the first stage narrows down the product candidates from about 50,000 items to 50 items for each customer using a two-tower model, and the second stage ingests the product candidates to make a recommendation for each customer, based on buying history. 
+This project uses the Instacart Kaggle dataset to train and set up the product recommendation system. The system is divided into two stages: the first stage narrows down the product candidates from about 50,000 items to 50 items for each customer using a two-tower model, and the second stage ingests the product candidates to make a recommendation for each customer, based on buying history and a dynamic F1 score to match the customer basket's size. 
 
 ---
 
 ## 1. Summary & Performance
+
+The Instacart dataset consists of about 200,000 customers and 50,000 products, which creates about ten billion possible pairs between customers and products. To better handle the problem, the recommendation engine is split into two distinct stages:
+
+* Stage 1 Candidate Generation (Two-Tower Model): This stage narrows the entire set of products down to 50 candidates per customer based on purchase history. 
+* Stage 2 Ranking & Prediction (LightGBM + Faron's Optimizer): This stage ranks the narrowed candidates from the featured buying history and determines the basket size for each customer to maximize an expected F1-score. 
+
+In stage one, Recall@50 is used to evaluate its performance (over 131,209 customers):
+
+Metric,Score
+Mean Recall@50,50.45%
+Median Recall@50,50.00%
+
 
 In the first stage, the two-tower model reduced the number of possible products to only 50 items. The performance in this stage is evaluated by Recall@50 against all items in the basket. The result for the training set (131,209 customers) is as follows:
 
