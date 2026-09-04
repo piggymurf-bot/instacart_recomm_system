@@ -201,7 +201,7 @@ python main.py --stage-two
 # 5. Make predictions on the test set and generate submission
 python main.py --test
 
-# 6. Evaluate @Recall50 on the candidate Data
+# 6. Evaluate Recall@50 on the candidate Data
 python main.py --recall50
 
 ```
