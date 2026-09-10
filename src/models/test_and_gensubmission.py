@@ -3,6 +3,8 @@ import os
 import numpy as np
 import pandas as pd
 import lightgbm as lgb
+import xgboost as xgb
+from catboost import CatBoostClassifier, Pool
 from typing import Dict, List
 from src.models.faron_optimizer import FaronF1Optimizer
 
@@ -24,13 +26,36 @@ def verify_and_generate_submission(
     ignore_cols = {'user_id', 'product_id', 'order_id'}
     features = [c for c in df_test.columns if c not in ignore_cols]
 
+    # Single LightGBM Classifier for stage 2
+    ###########
     # Load saved LGB model
-    model = lgb.Booster(model_file="models/stage2_lightgbm.model")
-
+    #model = lgb.Booster(model_file="models/stage2_lightgbm.model")
     # Predict
-    print("🔮 Scoring Test Candidates...")
-    df_test['pred_prob'] = model.predict(df_test[features])
+    #print("🔮 Scoring Test Candidates...")
+    #df_test['pred_prob'] = model.predict(df_test[features])
+    ###########
 
+    # Ensemble Classifier for stage 2
+    ###########
+    lgb_model = lgb.Booster(model_file="models/stage2_lightgbm.model")
+    cb_model = CatBoostClassifier()
+    cb_model.load_model("models/stage2_catboost.model")
+    xgb_model = xgb.Booster()
+    xgb_model.load_model("models/stage2_xgboost.json")
+
+    # Predict test probabilities
+    lgb_probs = lgb_model.predict(df_test[features])
+    cb_probs = cb_model.predict_proba(df_test[features])[:, 1]
+    xgb_probs = xgb_model.predict(xgb.DMatrix(df_test[features]))
+
+    # Blend using optimal weights 
+    blend_weight = pd.read_csv("data/blend_weight.csv") #Getting optimal weight from training step
+    w_lgb = blend_weight['w_lgb'][0]
+    w_cb = blend_weight['w_cb'][0]
+    w_xgb = blend_weight['w_xgb'][0]
+    df_test['pred_prob'] = (w_lgb * lgb_probs) + (w_cb * cb_probs) + (w_xgb * xgb_probs)
+    ###########
+   
     # Check distribution
     probs = df_test['pred_prob'].to_numpy()
     print("\n🔍 Updated Probability Distribution Check:")

@@ -1,8 +1,10 @@
+catboost==1.2.10
 faiss==1.14.3
 joblib==1.5.3
 kagglehub==1.0.2
 lightgbm==4.7.0
-numpy==2.5.2
+numpy==2.5.3
 pandas==3.0.5
 python-dotenv==1.2.3
 torch==2.13.0+cu130
+xgboost==3.4.1

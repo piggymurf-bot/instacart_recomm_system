@@ -10,6 +10,7 @@
 # Ignore data files and large models
 /data/
 /models/
+/catboost_info
 
 # Python 
 .ipynb_checkpoints/

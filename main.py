@@ -11,6 +11,7 @@ from src.features.build_stage2_features import build_stage2_feature_matrix
 from src.models.train_lightGBM import train_and_optimize_lightgbm
 from src.models.dynamics_f1 import run_full_basket_evaluation
 from src.models.test_and_gensubmission import verify_and_generate_submission
+from src.models.train_ensemble import  train_ensemble
 
 # 1. Load API keys from environment file
 load_dotenv('.kaggle/access_token/token.env')
@@ -108,8 +109,9 @@ def main():
 
   if args.stage_two:
     print('--> Passing Candidates: Train LightGBM model...')
-    best_threshold = train_and_optimize_lightgbm()
-    run_full_basket_evaluation(static_best_threshold=best_threshold)
+    #best_threshold = train_and_optimize_lightgbm()
+    #run_full_basket_evaluation(static_best_threshold=best_threshold)
+    train_ensemble()
 
   if args.test:
     print('--> Make prediction and generate submission...')
