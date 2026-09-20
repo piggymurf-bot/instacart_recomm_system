@@ -28,7 +28,6 @@ def get_instacart_data(api_token: str, target_dir: str = "data"):
             src_file = os.path.join(cache_path, file_name)
             dest_file = os.path.join(target_dir, file_name)
             
-            # Copy file (or use shutil.move if you prefer to relocate instead of duplicate)
             if os.path.isfile(src_file):
                 #shutil.copy2(src_file, dest_file) # Copy files from Kaggle .cache to data folder
                 shutil.move(src_file, dest_file) # Move files instead
